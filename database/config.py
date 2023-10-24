@@ -2,11 +2,11 @@ import os
 from dotenv import load_dotenv
 
 from pathlib import Path
-env_path = Path('.') / 'info.env'
+env_path = Path('database/.') / 'info.env'
 load_dotenv(dotenv_path=env_path)
 
 class Settings:
-    PROJECT_NAME:str = "MassBip"
+    PROJECT_NAME:str = "MassBio"
     PROJECT_VERSION: str = "1.0.0"
 
     POSTGRES_USER : str = os.getenv("POSTGRES_USER")

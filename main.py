@@ -1,10 +1,9 @@
-from fastapi import FastAPI, HTTPException, status
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
-from session import engine 
-from config import settings
-from Request import Filter
-from Response import Response
+from fastapi import FastAPI, HTTPException
+from database.session import engine, SessionLocal, Base
+from database.config import settings
+from typing import List, Optional
+from pydantic import BaseModel
+import models.ReportOutput as ReportOutput
 
 def create_tables():         
     Base.metadata.create_all(bind=engine)
@@ -14,34 +13,21 @@ def start_application():
     create_tables()
     return app
 
-Base = declarative_base()
+class Filter(BaseModel):
+    filters: dict
+    ordering: Optional[List[dict]]
 
-class ReportOutputModel(Base):
-    __tablename__ = "report_output"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    row = Column(Integer, nullable=True)
-    main_uploaded_variation = Column(String, nullable=True)
-    main_existing_variation = Column(String, nullable=True)
-    main_symbol = Column(String, nullable=True)
-    main_af_vcf = Column(String, nullable=True)
-    main_dp = Column(Integer, nullable=True)
-    details2_provean = Column(String, nullable=True)
-    details2_dann_score = Column(Integer, nullable=True)
-    links_mondo = Column(String, nullable=True)
-    links_pheno_pubmed = Column(String, nullable=True)
-    
-
-
-
-
+class Response(BaseModel):
+    page: int
+    page_size: int
+    count: int
+    results: List[dict]
 
 app = start_application()
 
 @app.post("/assignment/query")
 async def read_report_output(page: int, page_size: int):
-    if(page < 1 or page_size < 1 or page == None or page_size == None):
+    if(page < 1 or page_size < 1):
         raise HTTPException(status_code=400, detail="Invalid page or page_size")
-    
-
+    return ReportOutput.get_user(db=SessionLocal(), user_id=1)
 
