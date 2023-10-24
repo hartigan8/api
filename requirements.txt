@@ -1,0 +1,8 @@
+fastapi
+uvicorn 
+
+#new
+SQLAlchemy
+psycopg2-binary    #linux/mac user use: psycopg2-binary==2.9.6
+
+python-dotenv
