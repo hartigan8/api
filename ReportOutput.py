@@ -15,6 +15,6 @@ class ReportOutput(Base):
     links_mondo = Column(String, nullable=True)
     links_pheno_pubmed = Column(String, nullable=True)
 
-def get_user(db: Session, user_id: int):
-    return db.query(ReportOutput).filter(ReportOutput.row == 1).first()
+def get_page(db: Session, page: int, page_size: int):
+    return db.query(ReportOutput).offset((page - 1) * page_size).limit(page_size).all()
 
