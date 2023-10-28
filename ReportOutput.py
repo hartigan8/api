@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import Session
 from database.session import Base
+from Requests import Request
 
 class ReportOutput(Base):
     __tablename__ = "report_output"
@@ -15,6 +16,18 @@ class ReportOutput(Base):
     links_mondo = Column(String, nullable=True)
     links_pheno_pubmed = Column(String, nullable=True)
 
-def get_page(db: Session, page: int, page_size: int):
-    return db.query(ReportOutput).offset((page - 1) * page_size).limit(page_size).all()
+def get_page(db: Session, page: int, page_size: int, request: Request):
+    
+    filters = request.filters # dict
+    order = request.ordering # List[dict]
+    # TODO filtering
+    q = db.query(ReportOutput)
+    for attr, value in filters.items():
+        q = q.filter(getattr(ReportOutput, attr).like("%%%s%%" % value))
+    
+    # TODO ordering
+
+
+
+    return q.all()
 
